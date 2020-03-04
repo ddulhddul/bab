@@ -20,8 +20,8 @@ export default function BottomTabNavigator({ navigation, route }) {
         name="Calendar"
         component={CalendarScreen}
         options={{
-          title: 'Calendar',
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-code-working" />,
+          title: '밥 달력',
+          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="ios-calendar" />,
         }}
       />
       <BottomTab.Screen
