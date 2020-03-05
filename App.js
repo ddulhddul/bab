@@ -8,6 +8,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import BottomTabNavigator from './navigation/BottomTabNavigator';
 import useLinking from './navigation/useLinking';
+import AddBabModal from './screens/AddBabModal';
 
 const Stack = createStackNavigator();
 
@@ -51,7 +52,20 @@ export default function App(props) {
         {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
         <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
           <Stack.Navigator>
-            <Stack.Screen name="Root" component={BottomTabNavigator} />
+            <Stack.Screen
+              name="Root"
+              component={BottomTabNavigator}
+              options={({ route }) => ({
+                headerShown: false
+              })}
+            />
+            <Stack.Screen
+              name="AddBabModal"
+              component={AddBabModal}
+              options={({ route }) => ({
+                title: (route.params || {}).babId? '수정': '추가'
+              })}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </View>

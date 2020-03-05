@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, AntDesign } from '@expo/vector-icons';
 
 export default class CalendarScreen extends React.Component {
   
@@ -17,9 +17,11 @@ export default class CalendarScreen extends React.Component {
 
   applyList (yyyy, mm, dateList) {
     const list = [
-      { yyyy: 2020, mm: 3, dd: 2, name: '최과장', cost: 3500, color: 'green' },
-      { yyyy: 2020, mm: 3, dd: 3, name: '최과장', cost: 3500, color: 'green' },
-      { yyyy: 2020, mm: 3, dd: 3, name: '김과장', cost: 3500, color: 'purple' },
+      { yyyy: 2020, mm: 3, dd: 2, name: '남차장', cost: 3500, color: 'green' },
+      { yyyy: 2020, mm: 3, dd: 3, name: '남차장', cost: 3500, color: 'green' },
+      { yyyy: 2020, mm: 3, dd: 4, name: '남차장', cost: 3500, color: 'green' },
+      { yyyy: 2020, mm: 3, dd: 5, name: '남차장', cost: 3500, color: 'green' },
+      { yyyy: 2020, mm: 3, dd: 4, name: '김차장', cost: 3500, color: 'blue' }
     ].filter((obj) => obj.yyyy === yyyy && obj.mm === mm)
     const costSummary = list.reduce((entry, obj) => {
       const costObj = entry[obj.name] || {}
@@ -81,22 +83,29 @@ export default class CalendarScreen extends React.Component {
     return String(x || '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   }
 
+  callModal () {
+    this.props.navigation.navigate('AddBabModal', { title: 'Add' })
+  }
+
   render () {
     const { yyyy, mm, dateList, costSummary } = this.state
     const todayDate = new Date()
     if (!yyyy) return null
     return (
       <View style={styles.container}>
-        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-          <View style={{ alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row', marginBottom: 30 }}>
-            <TouchableOpacity onPress={()=>this.makeCalendar(yyyy, mm-1)}>
-              <Ionicons name={'ios-arrow-back'} size={22} style={{ marginLeft: 20 }} />
-            </TouchableOpacity>
-            <Text style={{ fontSize: 30, fontWeight: 'bold' }}>{ [yyyy, mm].join('.') }</Text>
-            <TouchableOpacity onPress={()=>this.makeCalendar(yyyy, mm+1)}>
-              <Ionicons name={'ios-arrow-forward'} size={22} style={{ marginRight: 20 }} />
-            </TouchableOpacity>
+        <View style={{ alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row', marginBottom: 30, marginTop: 30 }}>
+          <TouchableOpacity onPress={()=>this.makeCalendar(yyyy, mm-1)}>
+            <Ionicons name={'ios-arrow-back'} size={25} style={{ marginLeft: 20 }} />
+          </TouchableOpacity>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+            <Text style={{ fontSize: 20, marginRight: 10 }}>{ [yyyy, '년'].join('') }</Text>
+            <Text style={{ fontSize: 30, fontWeight: 'bold' }}>{ [mm, '월'].join('') }</Text>
           </View>
+          <TouchableOpacity onPress={()=>this.makeCalendar(yyyy, mm+1)}>
+            <Ionicons name={'ios-arrow-forward'} size={25} style={{ marginRight: 20 }} />
+          </TouchableOpacity>
+        </View>
+        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           {
             dateList.map((weekList, weekIndex) => {
               return (
@@ -161,7 +170,19 @@ export default class CalendarScreen extends React.Component {
               )
             })
           }
+          <View style={{ height: 100 }}/>
         </ScrollView>
+        <View style={{
+          position: 'absolute',
+          alignItems: 'center',
+          justifyContent: 'center',
+          right: 20,
+          bottom: 20
+        }}>
+          <TouchableOpacity onPress={()=>this.callModal()}>
+            <AntDesign name={'pluscircle'} size={40} style={{ color: 'red' }} />
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
