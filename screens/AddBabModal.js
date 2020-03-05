@@ -1,12 +1,14 @@
 import * as React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import DatetimePicker from '@react-native-community/datetimepicker'
 
 export default function AddBabModal({ navigation }) {
   return (
     <View style={styles.container}>
       <ScrollView style={{...styles.container, flex: 1}} contentContainerStyle={styles.contentContainer}>
         <Text style={{ fontSize: 30 }}>This is a modal!</Text>
+        <DatetimePicker value={20190101} />
       </ScrollView>
       <Button onPress={() => navigation.goBack()} title="Dismiss" />
     </View>
