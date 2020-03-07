@@ -9,6 +9,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import BottomTabNavigator from './navigation/BottomTabNavigator';
 import useLinking from './navigation/useLinking';
 import AddBabModal from './screens/AddBabModal';
+import SqlUtil from './SqlUtil.js'
 
 const Stack = createStackNavigator();
 
@@ -32,6 +33,9 @@ export default function App(props) {
           ...Ionicons.font,
           'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
         });
+
+        await SqlUtil.initCustomTable()
+
       } catch (e) {
         // We might want to provide this error information to an error reporting service
         console.warn(e);

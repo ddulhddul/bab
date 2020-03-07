@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { TextInput, StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
+import { ToastAndroid, TextInput, StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import DatetimePicker from '@react-native-community/datetimepicker'
 import { Ionicons, AntDesign } from '@expo/vector-icons';
+import SqlUtil from '../SqlUtil.js'
 
 export default class AddBabModal extends React.Component {
 
@@ -11,12 +12,12 @@ export default class AddBabModal extends React.Component {
     const defaultState = {
       costUnitList: [3000, 3500, 4000, 4500, 5000],
       personList: [
-        { personId: '1', name: '사람1' },
-        { personId: '2', name: '사람2' },
-        { personId: '3', name: '사람3' },
+        { user_id: 1, name: '사람1' },
+        { user_id: 2, name: '사람2' },
+        { user_id: 3, name: '사람3' },
       ],
       yyyymmdd: this.getYYYYMMDDFromDate(new Date),
-      personId: undefined,
+      user_id: undefined,
       cost: 0,
       showCalendar: false
     }
@@ -26,9 +27,9 @@ export default class AddBabModal extends React.Component {
         String(params.mm).padStart(2, '0'),
         String(params.dd).padStart(2, '0')
       ].join('')
-    if (params.personId) defaultState.personId = params.personId
+    if (params.user_id) defaultState.user_id = params.user_id
     if (params.cost) defaultState.cost = params.cost
-    if (params.babId) defaultState.babId = params.babId
+    if (params.bab_id) defaultState.bab_id = params.bab_id
     this.state = defaultState
     // console.log('this.props.navigation3', this.props.route.params)
   }
@@ -54,16 +55,28 @@ export default class AddBabModal extends React.Component {
     ].join('')
   }
   
-  save () {
-
+  async save () {
+    const { bab_id, yyyymmdd, user_id, cost } = this.state
+    const res = await SqlUtil.modifyBab({
+      ...this.state,
+      yyyy: yyyymmdd.substring(0,4),
+      mm: yyyymmdd.substring(4,6),
+      dd: yyyymmdd.substring(6,8)
+    })
+    // console.log('save result', res)
+    if (res.rowsAffected) {
+      ToastAndroid.show('저장되었습니다.', ToastAndroid.SHORT)
+      this.props.navigation.goBack()
+    } else {
+      ToastAndroid.show('Error !', ToastAndroid.SHORT)
+    }
   }
 
   delete () {
-
   }
 
   render () {
-    const { personList, costUnitList, showCalendar, babId, yyyymmdd, personId, cost } = this.state
+    const { personList, costUnitList, showCalendar, bab_id, yyyymmdd, user_id, cost } = this.state
     return (
       <View style={styles.container}>
         <ScrollView style={{...styles.container, flex: 1}} contentContainerStyle={styles.contentContainer}>
@@ -92,9 +105,9 @@ export default class AddBabModal extends React.Component {
                   personList.map((person) => {
                     return (
                       <TouchableOpacity
-                        key={['person', person.personId].join('_')}
-                        style={{ backgroundColor: person.personId === personId? 'red': 'grey', borderRadius: 50, marginRight: 2 }}
-                        onPress={()=>this.setState({ personId: person.personId })}
+                        key={['person', person.user_id].join('_')}
+                        style={{ backgroundColor: person.user_id == user_id? 'red': 'grey', borderRadius: 50, marginRight: 2 }}
+                        onPress={()=>this.setState({ user_id: person.user_id })}
                       >
                         <Text style={{ padding: 5, margin: 3, fontSize: 15, fontWeight: 'bold', color: 'white' }}>
                           {person.name}
@@ -137,7 +150,7 @@ export default class AddBabModal extends React.Component {
             <Button onPress={() => this.props.navigation.goBack()} title="취소" />
           </View>
           {
-            babId && <View style={{flex: 1, margin: 20}}>
+            bab_id && <View style={{flex: 1, margin: 20}}>
               <Button onPress={() => this.delete()} title="삭제" />
             </View>
           }

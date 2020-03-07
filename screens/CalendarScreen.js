@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Ionicons, AntDesign } from '@expo/vector-icons';
+import SqlUtil from '../SqlUtil.js'
 
 export default class CalendarScreen extends React.Component {
   
@@ -9,29 +10,48 @@ export default class CalendarScreen extends React.Component {
     super(props)
     this.state = {
       personList: [
-        { personId: '1', name: '사람1' },
-        { personId: '2', name: '사람2' },
-        { personId: '3', name: '사람3' },
+        { user_id: 1, name: '사람1' },
+        { user_id: 2, name: '사람2' },
+        { user_id: 3, name: '사람3' },
       ],
     }
   }
 
-  componentWillMount () {
-    const date = new Date()
-    this.makeCalendar(date.getFullYear(), date.getMonth()+1)
+  componentDidMount() {
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      this.initCalendar()
+    })
   }
 
-  applyList (yyyy, mm, dateList) {
-    const list = [
-      { babId: '1', yyyy: 2020, mm: 3, dd: 2, personId: '1', cost: 3500, color: 'green' },
-      { babId: '2', yyyy: 2020, mm: 3, dd: 3, personId: '1', cost: 3500, color: 'green' },
-      { babId: '3', yyyy: 2020, mm: 3, dd: 4, personId: '1', cost: 3500, color: 'green' },
-      { babId: '4', yyyy: 2020, mm: 3, dd: 5, personId: '1', cost: 3500, color: 'green' },
-      { babId: '5', yyyy: 2020, mm: 3, dd: 4, personId: '2', cost: 3500, color: 'blue' }
-    ].filter((obj) => obj.yyyy === yyyy && obj.mm === mm)
+  componentWillUnmount() {
+    this._unsubscribe()
+  }
+
+
+  async initCalendar () {
+    // console.log('listBab', await SqlUtil.listBab())
+    const { yyyy, mm } = this.state
+    if (yyyy) {
+      this.makeCalendar(yyyy, mm)
+    } else {
+      const date = new Date()
+      this.makeCalendar(date.getFullYear(), date.getMonth()+1)
+    }
+  }
+
+  async applyList (yyyy, mm, dateList) {
+    // const list = [
+    //   { bab_id: '1', yyyy: 2020, mm: 3, dd: 2, user_id: '1', cost: 3500, color: 'green' },
+    //   { bab_id: '2', yyyy: 2020, mm: 3, dd: 3, user_id: '1', cost: 3500, color: 'green' },
+    //   { bab_id: '3', yyyy: 2020, mm: 3, dd: 4, user_id: '1', cost: 3500, color: 'green' },
+    //   { bab_id: '4', yyyy: 2020, mm: 3, dd: 5, user_id: '1', cost: 3500, color: 'green' },
+    //   { bab_id: '5', yyyy: 2020, mm: 3, dd: 4, user_id: '2', cost: 3500, color: 'blue' }
+    // ]
+    let list = await SqlUtil.listBab()
+    list = list.filter((obj) => obj.yyyy === yyyy && obj.mm === mm)
     const costSummary = list.reduce((entry, obj) => {
-      const costObj = entry[obj.personId] || {}
-      entry[obj.personId] = {
+      const costObj = entry[obj.user_id] || {}
+      entry[obj.user_id] = {
         color: obj.color,
         totalCost: (costObj.totalCost || 0) + obj.cost,
         totalCnt: (costObj.totalCnt || 0) + 1
@@ -49,7 +69,7 @@ export default class CalendarScreen extends React.Component {
     }
   }
 
-  makeCalendar (paramYyyy, paramMm) {
+  async makeCalendar (paramYyyy, paramMm) {
     const firstDay = new Date(paramYyyy, paramMm-1, 1)
     const lastDay = new Date(paramYyyy, paramMm, 0)
     const yyyy = firstDay.getFullYear()
@@ -64,7 +84,7 @@ export default class CalendarScreen extends React.Component {
     const fullDate = lastDay.getDate() + firstDay.getDay()
     const weekCnt = fullDate % 7 === 0 ? (fullDate / 7) : Math.ceil(fullDate / 7)
 
-    const applyResult = this.applyList(yyyy, mm, dateList)
+    const applyResult = await this.applyList(yyyy, mm, dateList)
     dateList = applyResult.dateList
 
     const result = {
@@ -139,7 +159,7 @@ export default class CalendarScreen extends React.Component {
                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                       <View style={{ height: 10, width: 10, backgroundColor: costObj.color, borderRadius: 50, marginRight: 2 }} />
                                       <Text style={{ fontSize: 10, fontWeight: 'bold', color: 'grey' }}>
-                                        { (personList.find((person) => person.personId === costObj.personId) || {}).name }
+                                        { (personList.find((person) => person.user_id == costObj.user_id) || {}).name }
                                       </Text>
                                     </View>
                                     <Text style={{ fontSize: 12, textAlign: 'center', fontWeight: 'bold' }}>{ this.comma(costObj.cost) }</Text>
@@ -164,14 +184,14 @@ export default class CalendarScreen extends React.Component {
               : null
           }
           {
-            Object.keys(costSummary).map((personId) => {
-              const obj = costSummary[personId]
+            Object.keys(costSummary).map((user_id) => {
+              const obj = costSummary[user_id]
               return (
-                <View key={personId} style={{ justifyContent: 'space-between', flexDirection: 'row', marginLeft: 20, marginRight: 20, marginTop: 20 }}>
+                <View key={user_id} style={{ justifyContent: 'space-between', flexDirection: 'row', marginLeft: 20, marginRight: 20, marginTop: 20 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <View style={{ height: 15, width: 15, backgroundColor: obj.color, borderRadius: 50, marginRight: 10 }} />
                     <Text style={{ color: 'grey', fontSize: 20, fontWeight: 'bold' }}>
-                      { (personList.find((person) => person.personId === personId) || {}).name }
+                      { (personList.find((person) => person.user_id == user_id) || {}).name }
                     </Text>
                   </View>
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
