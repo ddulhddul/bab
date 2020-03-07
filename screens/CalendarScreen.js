@@ -23,11 +23,11 @@ export default class CalendarScreen extends React.Component {
 
   applyList (yyyy, mm, dateList) {
     const list = [
-      { yyyy: 2020, mm: 3, dd: 2, personId: '1', cost: 3500, color: 'green' },
-      { yyyy: 2020, mm: 3, dd: 3, personId: '1', cost: 3500, color: 'green' },
-      { yyyy: 2020, mm: 3, dd: 4, personId: '1', cost: 3500, color: 'green' },
-      { yyyy: 2020, mm: 3, dd: 5, personId: '1', cost: 3500, color: 'green' },
-      { yyyy: 2020, mm: 3, dd: 4, personId: '2', cost: 3500, color: 'blue' }
+      { babId: '1', yyyy: 2020, mm: 3, dd: 2, personId: '1', cost: 3500, color: 'green' },
+      { babId: '2', yyyy: 2020, mm: 3, dd: 3, personId: '1', cost: 3500, color: 'green' },
+      { babId: '3', yyyy: 2020, mm: 3, dd: 4, personId: '1', cost: 3500, color: 'green' },
+      { babId: '4', yyyy: 2020, mm: 3, dd: 5, personId: '1', cost: 3500, color: 'green' },
+      { babId: '5', yyyy: 2020, mm: 3, dd: 4, personId: '2', cost: 3500, color: 'blue' }
     ].filter((obj) => obj.yyyy === yyyy && obj.mm === mm)
     const costSummary = list.reduce((entry, obj) => {
       const costObj = entry[obj.personId] || {}
@@ -89,8 +89,8 @@ export default class CalendarScreen extends React.Component {
     return String(x || '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   }
 
-  callModal () {
-    this.props.navigation.navigate('AddBabModal', { title: 'Add' })
+  callModal (param) {
+    this.props.navigation.navigate('AddBabModal', { ...param, title: !param? 'Add': 'Modify' })
   }
 
   render () {
@@ -135,13 +135,15 @@ export default class CalendarScreen extends React.Component {
                             (dateObj.costList || []).map((costObj, costIndex) => {
                               return (
                                 <View key={['cost', weekIndex, dateIndex, costIndex].join('_')}>
-                                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                    <View style={{ height: 10, width: 10, backgroundColor: costObj.color, borderRadius: 50, marginRight: 2 }} />
-                                    <Text style={{ fontSize: 10, fontWeight: 'bold', color: 'grey' }}>
-                                      { (personList.find((person) => person.personId === costObj.personId) || {}).name }
-                                    </Text>
-                                  </View>
-                                  <Text style={{ fontSize: 12, textAlign: 'center', fontWeight: 'bold' }}>{ this.comma(costObj.cost) }</Text>
+                                  <TouchableOpacity onPress={()=>this.callModal(costObj)}>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                      <View style={{ height: 10, width: 10, backgroundColor: costObj.color, borderRadius: 50, marginRight: 2 }} />
+                                      <Text style={{ fontSize: 10, fontWeight: 'bold', color: 'grey' }}>
+                                        { (personList.find((person) => person.personId === costObj.personId) || {}).name }
+                                      </Text>
+                                    </View>
+                                    <Text style={{ fontSize: 12, textAlign: 'center', fontWeight: 'bold' }}>{ this.comma(costObj.cost) }</Text>
+                                  </TouchableOpacity>
                                 </View>
                               )
                             })
@@ -157,7 +159,7 @@ export default class CalendarScreen extends React.Component {
           {
             (costSummary && Object.keys(costSummary).length)
               ? <View style={{ borderBottomColor: 'grey', borderBottomWidth: 1, borderStyle: 'solid', padding: 5, marginTop: 20 }}>
-                  <Text style={{ color: 'grey', fontSize: 15, fontWeight: 'bold', marginLeft: 5 }}>요약</Text>
+                  <Text style={{ color: 'grey', fontSize: 15, fontWeight: 'bold', marginLeft: 5 }}>월 요약</Text>
                 </View>
               : null
           }

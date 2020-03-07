@@ -8,7 +8,7 @@ export default class AddBabModal extends React.Component {
 
   constructor (props) {
     super(props)
-    this.state = {
+    const defaultState = {
       costUnitList: [3000, 3500, 4000, 4500, 5000],
       personList: [
         { personId: '1', name: '사람1' },
@@ -20,6 +20,17 @@ export default class AddBabModal extends React.Component {
       cost: 0,
       showCalendar: false
     }
+    const params = this.props.route.params || {}
+    if (params.yyyy) defaultState.yyyymmdd = [
+        params.yyyy,
+        String(params.mm).padStart(2, '0'),
+        String(params.dd).padStart(2, '0')
+      ].join('')
+    if (params.personId) defaultState.personId = params.personId
+    if (params.cost) defaultState.cost = params.cost
+    if (params.babId) defaultState.babId = params.babId
+    this.state = defaultState
+    // console.log('this.props.navigation3', this.props.route.params)
   }
 
   onCalendarChange (selectedDate) {
@@ -35,7 +46,7 @@ export default class AddBabModal extends React.Component {
   }
 
   getYYYYMMDDFromDate (date) {
-    if (!date) return null
+    if (!date) return ''
     return [
       date.getFullYear(),
       String(date.getMonth() + 1).padStart(2, '0'),
@@ -47,8 +58,12 @@ export default class AddBabModal extends React.Component {
 
   }
 
+  delete () {
+
+  }
+
   render () {
-    const { personList, costUnitList, showCalendar, yyyymmdd, personId, cost } = this.state
+    const { personList, costUnitList, showCalendar, babId, yyyymmdd, personId, cost } = this.state
     return (
       <View style={styles.container}>
         <ScrollView style={{...styles.container, flex: 1}} contentContainerStyle={styles.contentContainer}>
@@ -60,7 +75,7 @@ export default class AddBabModal extends React.Component {
               <TouchableOpacity onPress={() => this.setState({ showCalendar: true })}>
                 <View stye={{ flexDirection: 'row', flex: 1 }} >
                   <AntDesign name={'calendar'} size={20} style={{ color: 'black' }} />
-                  <Text style={{ fontSize: 20 }}>{ String(yyyymmdd).replace(/(.{4})(.{2})(.{2})/, '$1-$2-$3') }</Text>
+                  <Text style={{ fontSize: 20 }}>{ (yyyymmdd||'') && String(yyyymmdd).replace(/(.{4})(.{2})(.{2})/, '$1-$2-$3') }</Text>
                 </View>
               </TouchableOpacity>
               { showCalendar && <DatetimePicker value={this.getDateFromYYYYMMDD(yyyymmdd)} onChange={(event, selectedDate) => this.onCalendarChange(selectedDate)} /> }
@@ -121,6 +136,11 @@ export default class AddBabModal extends React.Component {
           <View style={{flex: 1, margin: 20}}>
             <Button onPress={() => this.props.navigation.goBack()} title="취소" />
           </View>
+          {
+            babId && <View style={{flex: 1, margin: 20}}>
+              <Button onPress={() => this.delete()} title="삭제" />
+            </View>
+          }
           <View style={{flex: 1, margin: 20}}>
             <Button onPress={() => this.save()} title="저장" />
           </View>
