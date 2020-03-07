@@ -7,7 +7,13 @@ export default class CalendarScreen extends React.Component {
   
   constructor (props) {
     super(props)
-    this.state = {}
+    this.state = {
+      personList: [
+        { personId: '1', name: '사람1' },
+        { personId: '2', name: '사람2' },
+        { personId: '3', name: '사람3' },
+      ],
+    }
   }
 
   componentWillMount () {
@@ -17,15 +23,15 @@ export default class CalendarScreen extends React.Component {
 
   applyList (yyyy, mm, dateList) {
     const list = [
-      { yyyy: 2020, mm: 3, dd: 2, name: '남차장', cost: 3500, color: 'green' },
-      { yyyy: 2020, mm: 3, dd: 3, name: '남차장', cost: 3500, color: 'green' },
-      { yyyy: 2020, mm: 3, dd: 4, name: '남차장', cost: 3500, color: 'green' },
-      { yyyy: 2020, mm: 3, dd: 5, name: '남차장', cost: 3500, color: 'green' },
-      { yyyy: 2020, mm: 3, dd: 4, name: '김차장', cost: 3500, color: 'blue' }
+      { yyyy: 2020, mm: 3, dd: 2, personId: '1', cost: 3500, color: 'green' },
+      { yyyy: 2020, mm: 3, dd: 3, personId: '1', cost: 3500, color: 'green' },
+      { yyyy: 2020, mm: 3, dd: 4, personId: '1', cost: 3500, color: 'green' },
+      { yyyy: 2020, mm: 3, dd: 5, personId: '1', cost: 3500, color: 'green' },
+      { yyyy: 2020, mm: 3, dd: 4, personId: '2', cost: 3500, color: 'blue' }
     ].filter((obj) => obj.yyyy === yyyy && obj.mm === mm)
     const costSummary = list.reduce((entry, obj) => {
-      const costObj = entry[obj.name] || {}
-      entry[obj.name] = {
+      const costObj = entry[obj.personId] || {}
+      entry[obj.personId] = {
         color: obj.color,
         totalCost: (costObj.totalCost || 0) + obj.cost,
         totalCnt: (costObj.totalCnt || 0) + 1
@@ -88,7 +94,7 @@ export default class CalendarScreen extends React.Component {
   }
 
   render () {
-    const { yyyy, mm, dateList, costSummary } = this.state
+    const { personList, yyyy, mm, dateList, costSummary } = this.state
     const todayDate = new Date()
     if (!yyyy) return null
     return (
@@ -131,7 +137,9 @@ export default class CalendarScreen extends React.Component {
                                 <View key={['cost', weekIndex, dateIndex, costIndex].join('_')}>
                                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                     <View style={{ height: 10, width: 10, backgroundColor: costObj.color, borderRadius: 50, marginRight: 2 }} />
-                                    <Text style={{ fontSize: 10, fontWeight: 'bold', color: 'grey' }}>{ costObj.name }</Text>
+                                    <Text style={{ fontSize: 10, fontWeight: 'bold', color: 'grey' }}>
+                                      { (personList.find((person) => person.personId === costObj.personId) || {}).name }
+                                    </Text>
                                   </View>
                                   <Text style={{ fontSize: 12, textAlign: 'center', fontWeight: 'bold' }}>{ this.comma(costObj.cost) }</Text>
                                 </View>
@@ -154,13 +162,15 @@ export default class CalendarScreen extends React.Component {
               : null
           }
           {
-            Object.keys(costSummary).map((name) => {
-              const obj = costSummary[name]
+            Object.keys(costSummary).map((personId) => {
+              const obj = costSummary[personId]
               return (
-                <View key={name} style={{ justifyContent: 'space-between', flexDirection: 'row', marginLeft: 20, marginRight: 20, marginTop: 20 }}>
+                <View key={personId} style={{ justifyContent: 'space-between', flexDirection: 'row', marginLeft: 20, marginRight: 20, marginTop: 20 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <View style={{ height: 15, width: 15, backgroundColor: obj.color, borderRadius: 50, marginRight: 10 }} />
-                    <Text style={{ color: 'grey', fontSize: 20, fontWeight: 'bold' }}>{ name }</Text>
+                    <Text style={{ color: 'grey', fontSize: 20, fontWeight: 'bold' }}>
+                      { (personList.find((person) => person.personId === personId) || {}).name }
+                    </Text>
                   </View>
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text style={{ marginRight: 20 }}>{ this.comma(obj.totalCnt) } 건</Text>
