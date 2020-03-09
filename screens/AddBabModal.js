@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ToastAndroid, TextInput, StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
+import { Alert, ToastAndroid, TextInput, StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import DatetimePicker from '@react-native-community/datetimepicker'
 import { Ionicons, AntDesign } from '@expo/vector-icons';
@@ -57,6 +57,9 @@ export default class AddBabModal extends React.Component {
   
   async save () {
     const { bab_id, yyyymmdd, user_id, cost } = this.state
+    if (!yyyymmdd) { ToastAndroid.show('날짜를 선택하세요.', ToastAndroid.SHORT); return }
+    if (!user_id) { ToastAndroid.show('대상을 선택하세요.', ToastAndroid.SHORT); return }
+    if (!cost) { ToastAndroid.show('금액을 입력하세요.', ToastAndroid.SHORT); return }
     const res = await SqlUtil.modifyBab({
       ...this.state,
       yyyy: yyyymmdd.substring(0,4),
@@ -72,7 +75,31 @@ export default class AddBabModal extends React.Component {
     }
   }
 
-  delete () {
+  async delete () {
+    Alert.alert(
+      '경고',
+      '삭제 하시겠습니까?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: async () => {
+            const res = await SqlUtil.deleteBab({
+              ...this.state
+            })
+            if (res.rowsAffected) {
+              ToastAndroid.show('삭제되었습니다.', ToastAndroid.SHORT)
+              this.props.navigation.goBack()
+            } else {
+              ToastAndroid.show('Error !', ToastAndroid.SHORT)
+            }
+          } },
+      ],
+      { cancelable: true }
+    )    
   }
 
   render () {

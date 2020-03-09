@@ -18,6 +18,17 @@ const SqlUtil = {
     if (param.bab_id) return await this.updateBab(param)
     else return await this.insertBab(param)
   },
+
+  async deleteBab (param = {}) {
+    const { res } = await this.queryExecute(
+      `delete from TB_BAB
+      WHERE bab_id = ?`,
+      [
+        param.bab_id
+      ]
+    )
+    return res
+  },
   
   async updateBab (param = {}) {
     const { res } = await this.queryExecute(
