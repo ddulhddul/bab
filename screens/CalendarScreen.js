@@ -144,11 +144,10 @@ export default class CalendarScreen extends React.Component {
                           style={{ flexDirection: 'column', flex: 1, marginLeft: 3, marginRight: 3 }}
                         >
                           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <Text style={{ fontSize: 13 }}>{ dateObj.dd }</Text>
                             {
                               (yyyy === todayDate.getFullYear() && mm === todayDate.getMonth()+1 && dateObj.dd === todayDate.getDate())
                                 ? <Text style={{ fontSize: 12, fontWeight: 'bold', color: 'red' }}>Today</Text>
-                                : null
+                                : <Text style={{ fontSize: 13 }}>{ dateObj.dd }</Text>
                             }
                           </View>
                           {
@@ -171,6 +170,35 @@ export default class CalendarScreen extends React.Component {
                         </View>
                       )
                     })
+                  }
+                  {
+                    <View
+                      key={['day', weekIndex, 9].join('_')}
+                      style={{ flexDirection: 'column', flex: 1, paddingLeft: 3, marginRight: 3, borderLeftColor: 'red', borderLeftWidth: 1, borderStyle: 'dotted' }}
+                    >
+                      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={{ fontSize: 13 }}>{weekIndex + 1}주</Text>
+                      </View>
+                      {
+                        Object.values(weekList.reduce((entry, dateObj) => {
+                          (dateObj.costList || []).forEach((obj) => {
+                            entry[obj.user_id] = entry[obj.user_id] || { user_id: obj.user_id, color: obj.color }
+                            entry[obj.user_id].cost = (entry[obj.user_id].cost || 0) + obj.cost
+                          })
+                          return entry
+                        }, {})).map((obj, objindex) => {
+                          return <View key={[weekIndex, 'cost', objindex, 'summary'].join('_')}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                              <View style={{ height: 10, width: 10, backgroundColor: obj.color, borderRadius: 50, marginRight: 2 }} />
+                              <Text style={{ fontSize: 10, fontWeight: 'bold', color: 'grey' }}>
+                                { (personList.find((person) => person.user_id == obj.user_id) || {}).name }
+                              </Text>
+                            </View>
+                            <Text style={{ fontSize: 12, textAlign: 'center', fontWeight: 'bold' }}>{ this.comma(obj.cost) }</Text>
+                          </View>
+                        })
+                      }
+                    </View>
                   }
                 </View>
               )
