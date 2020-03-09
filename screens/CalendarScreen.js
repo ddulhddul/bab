@@ -29,7 +29,6 @@ export default class CalendarScreen extends React.Component {
 
 
   async initCalendar () {
-    // console.log('listBab', await SqlUtil.listBab())
     const { yyyy, mm } = this.state
     if (yyyy) {
       this.makeCalendar(yyyy, mm)
@@ -47,7 +46,7 @@ export default class CalendarScreen extends React.Component {
     //   { bab_id: '4', yyyy: 2020, mm: 3, dd: 5, user_id: '1', cost: 3500, color: 'green' },
     //   { bab_id: '5', yyyy: 2020, mm: 3, dd: 4, user_id: '2', cost: 3500, color: 'blue' }
     // ]
-    let list = await SqlUtil.listBab()
+    let list = await SqlUtil.listBab({ yyyy, mm })
     list = list.filter((obj) => obj.yyyy === yyyy && obj.mm === mm)
     const costSummary = list.reduce((entry, obj) => {
       const costObj = entry[obj.user_id] || {}
@@ -109,8 +108,14 @@ export default class CalendarScreen extends React.Component {
     return String(x || '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   }
 
-  callModal (param) {
-    this.props.navigation.navigate('AddBabModal', { ...param, title: !param? 'Add': 'Modify' })
+  async callModal (param) {
+    let initParam = {}
+    if (!param) {
+      const date = new Date()
+      let list = await SqlUtil.listBab({ yyyy: date.getFullYear(), mm: date.getMonth()+1 }) || []
+      initParam = { ...list[0], bab_id: undefined, yyyy: undefined, mm: undefined, dd: undefined }
+    }
+    this.props.navigation.navigate('AddBabModal', { ...param, ...initParam, title: !param? 'Add': 'Modify' })
   }
 
   render () {

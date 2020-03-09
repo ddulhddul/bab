@@ -8,8 +8,14 @@ const SqlUtil = {
 
   async listBab (param = {}) {
     const { res } = await this.queryExecute(
-      `SELECT * FROM TB_BAB`,
-      []
+      `SELECT * FROM TB_BAB
+      where yyyy = ?
+      and mm = ?
+      order by create_datetime desc`,
+      [
+        Number(param.yyyy),
+        Number(param.mm)
+      ]
     )
     return (res.rows||{})._array || []
   },
