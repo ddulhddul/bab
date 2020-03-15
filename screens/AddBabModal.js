@@ -10,7 +10,7 @@ export default class AddBabModal extends React.Component {
   constructor (props) {
     super(props)
     const defaultState = {
-      costUnitList: [3000, 3500, 4000, 4500, 5000],
+      costUnitList: [3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500],
       personList: [],
       yyyymmdd: this.getYYYYMMDDFromDate(new Date),
       user_id: undefined,
@@ -30,11 +30,17 @@ export default class AddBabModal extends React.Component {
     // console.log('this.props.navigation3', this.props.route.params)
   }
 
-  async componentWillMount () {
-    const userList = await SqlUtil.listUser()
-    this.setState({
-      personList: userList
+  async componentDidMount () {
+    this._unsubscribe = this.props.navigation.addListener('focus', async () => {
+      const userList = await SqlUtil.listUser()
+      this.setState({
+        personList: userList
+      })
     })
+  }
+
+  componentWillUnmount () {
+    this._unsubscribe()
   }
 
   onCalendarChange (selectedDate) {
@@ -116,7 +122,7 @@ export default class AddBabModal extends React.Component {
             </View>
             <View style={styles.inputArea}>
               <TouchableOpacity onPress={() => this.setState({ showCalendar: true })}>
-                <View stye={{ flexDirection: 'row', flex: 1 }} >
+                <View stye={{ flexDirection: 'row' }} >
                   <AntDesign name={'calendar'} size={20} style={{ color: 'black' }} />
                   <Text style={{ fontSize: 20 }}>{ (yyyymmdd||'') && String(yyyymmdd).replace(/(.{4})(.{2})(.{2})/, '$1-$2-$3') }</Text>
                 </View>
@@ -130,13 +136,13 @@ export default class AddBabModal extends React.Component {
               <Text style={{ fontSize: 20 }}>대상</Text>
             </View>
             <View style={styles.inputArea}>
-              <View style={{ flexDirection: 'row' }}>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
                 {
                   personList.map((person) => {
                     return (
                       <TouchableOpacity
                         key={['person', person.user_id].join('_')}
-                        style={{ backgroundColor: person.user_id == user_id? 'red': 'grey', borderRadius: 50, marginRight: 2 }}
+                        style={{ backgroundColor: person.user_id == user_id? 'red': 'grey', borderRadius: 50, marginRight: 2, marginBottom: 10 }}
                         onPress={()=>this.setState({ user_id: person.user_id })}
                       >
                         <Text style={{ padding: 5, margin: 3, fontSize: 15, fontWeight: 'bold', color: 'white' }}>
@@ -146,6 +152,9 @@ export default class AddBabModal extends React.Component {
                     )
                   })
                 }
+                <TouchableOpacity onPress={()=>this.props.navigation.navigate('AddUserModal', { title: 'Modify' })}>
+                  <AntDesign name={'pluscircle'} size={35} style={{ color: 'grey' }} />
+                </TouchableOpacity>
               </View>
             </View>
           </View>
@@ -155,13 +164,13 @@ export default class AddBabModal extends React.Component {
               <Text style={{ fontSize: 20 }}>금액</Text>
             </View>
             <View style={styles.inputArea}>
-              <View style={{ flexDirection: 'row' }}>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                 {
                   costUnitList.map((costUnit) => {
                     return (
                       <TouchableOpacity
                         key={['cost', costUnit].join('_')}
-                        style={{ backgroundColor: cost === costUnit? 'red': 'grey', borderRadius: 50, marginRight: 2 }}
+                        style={{ backgroundColor: cost === costUnit? 'red': 'grey', borderRadius: 50, marginRight: 2, marginBottom: 10 }}
                         onPress={()=>this.setState({ cost: costUnit })}
                       >
                         <Text style={{ padding: 5, margin: 3, fontSize: 15, fontWeight: 'bold', color: 'white' }}>

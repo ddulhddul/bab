@@ -66,7 +66,7 @@ export default class UserScreen extends React.Component {
           alignItems: 'center',
           justifyContent: 'center',
           right: 20,
-          bottom: 100
+          bottom: 20
         }}>
           <TouchableOpacity onPress={()=>this.callModal()}>
             <AntDesign name={'pluscircle'} size={40} style={{ color: 'red' }} />

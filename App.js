@@ -75,7 +75,7 @@ export default function App(props) {
               name="AddUserModal"
               component={AddUserModal}
               options={({ route }) => ({
-                title: (route.params || {}).user_id? '수정': '추가'
+                title: (route.params || {}).user_id? '대상자 수정': '대상자 추가'
               })}
             />
           </Stack.Navigator>

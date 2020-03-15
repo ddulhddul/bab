@@ -182,7 +182,7 @@ export default class CalendarScreen extends React.Component {
                       style={{ flexDirection: 'column', flex: 1, paddingLeft: 3, marginRight: 3, borderLeftColor: 'red', borderLeftWidth: 1, borderStyle: 'dotted' }}
                     >
                       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                        <Text style={{ fontSize: 13 }}>{weekIndex + 1}주</Text>
+                        <Text style={{ fontSize: 13, color: 'grey' }}>{weekIndex + 1}주</Text>
                       </View>
                       {
                         Object.values(weekList.reduce((entry, dateObj) => {
