@@ -11,17 +11,14 @@ export default class CalendarScreen extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      personList: [
-        { user_id: 1, name: '사람1' },
-        { user_id: 2, name: '사람2' },
-        { user_id: 3, name: '사람3' },
-      ],
+      personList: []
     }
   }
 
   componentDidMount() {
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
       this.initCalendar()
+      this.initUserList()
     })
   }
 
@@ -29,7 +26,11 @@ export default class CalendarScreen extends React.Component {
     this._unsubscribe()
   }
 
-
+  async initUserList () {
+    let list = await SqlUtil.listUser() || []
+    this.setState({ personList: list })
+  }
+  
   async initCalendar () {
     const { yyyy, mm } = this.state
     if (yyyy) {

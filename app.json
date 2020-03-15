@@ -13,9 +13,9 @@
       "config": {
         "googleMobileAdsAppId": "ca-app-pub-6335521540809347~2452312215"
       },
-      "versionCode": 5
+      "versionCode": 6
     },
-    "version": "1.0.4",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "bab",
