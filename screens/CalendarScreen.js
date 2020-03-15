@@ -3,6 +3,8 @@ import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react
 import { ScrollView } from 'react-native-gesture-handler';
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import SqlUtil from '../SqlUtil.js'
+import { AdMobBanner } from 'expo-ads-admob';
+import Private from './Private.json';
 
 export default class CalendarScreen extends React.Component {
   
@@ -124,7 +126,16 @@ export default class CalendarScreen extends React.Component {
     if (!yyyy) return null
     return (
       <View style={styles.container}>
-        <View style={{ alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row', marginBottom: 30, marginTop: 30 }}>
+        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <AdMobBanner
+            bannerSize="banner"
+            adUnitID={Private.admobId}
+            setTestDeviceID="EMULATOR"
+            servePersonalizedAds // true or false
+            onDidFailToReceiveAdWithError={()=>{console.log('bannerError')}}
+          />
+        </View>
+        <View style={{ alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row', marginBottom: 30 }}>
           <TouchableOpacity onPress={()=>this.makeCalendar(yyyy, mm-1)}>
             <Ionicons name={'ios-arrow-back'} size={25} style={{ marginLeft: 20 }} />
           </TouchableOpacity>

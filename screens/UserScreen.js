@@ -3,6 +3,8 @@ import { Button, Image, Platform, StyleSheet, Text, TouchableOpacity, View } fro
 import { ScrollView } from 'react-native-gesture-handler';
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import SqlUtil from '../SqlUtil.js'
+import { AdMobBanner } from 'expo-ads-admob';
+import Private from './Private.json';
 
 export default class UserScreen extends React.Component {
   
@@ -36,8 +38,17 @@ export default class UserScreen extends React.Component {
     const { userList } = this.state
     return (
       <View style={styles.container}>
+        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <AdMobBanner
+            bannerSize="banner"
+            adUnitID={Private.admobId}
+            setTestDeviceID="EMULATOR"
+            servePersonalizedAds // true or false
+            onDidFailToReceiveAdWithError={()=>{console.log('bannerError')}}
+          />
+        </View>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-          <View style={{ alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row', marginBottom: 20, marginTop: 20, marginLeft: 30, marginRight: 30 }}>
+          <View style={{ alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row', marginBottom: 20, marginTop: 0, marginLeft: 30, marginRight: 30 }}>
             <Text style={{ fontSize: 30 }}>대상자</Text>
           </View>
           {
