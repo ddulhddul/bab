@@ -4,6 +4,82 @@ const db = SQLite.openDatabase('bab.db')
 const SqlUtil = {
   async initCustomTable () {
     await this.initBabTable()
+    await this.initUserTable()
+  },
+
+  async modifyUser (param = {}) {
+    if (param.user_id) return await this.updateUser(param)
+    else return await this.insertUser(param)
+  },
+
+  async deleteUser (param = {}) {
+    const { res } = await this.queryExecute(
+      `delete from TB_USER
+      WHERE user_id = ?`,
+      [
+        param.user_id
+      ]
+    )
+    return res
+  },
+  
+  async updateUser (param = {}) {
+    const { res } = await this.queryExecute(
+      `update TB_USER
+      set 
+        name = ?,
+        color = ?
+      WHERE user_id = ?`,
+      [
+        param.name,
+        param.color,
+        param.user_id
+      ]
+    )
+    return res
+  },
+  
+  async insertUser (param = {}) {
+    const { res } = await this.queryExecute(
+      `insert into TB_USER (
+        name,
+        color
+      ) values (
+        ?, ?
+      )`,
+      [
+        param.name,
+        param.color
+      ]
+    )
+    return res || {}
+  },
+
+  async initUserTable () {
+    // await this.queryExecute(`DROP TABLE IF EXISTS TB_USER`)
+
+    const { res } = await this.queryExecute(`
+    SELECT 1 FROM sqlite_master 
+    WHERE type='table' 
+    AND name='TB_USER'
+    AND EXISTS (
+        SELECT 1 
+        FROM sqlite_master 
+        WHERE name = 'TB_USER' 
+        AND sql LIKE '%name%'
+    )
+    `, [])
+    if (res.rows.length == 0) {
+        const { tx1, res1 } = await this.queryExecute(
+          `CREATE TABLE IF NOT EXISTS TB_USER (
+            user_id INTEGER PRIMARY KEY AUTOINCREMENT, 
+            name VARCHAR(300),
+            color VARCHAR(30),
+            create_datetime datetime default current_timestamp 
+          )`,
+          []
+        )
+    }
   },
 
   async listBab (param = {}) {
