@@ -9,6 +9,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import BottomTabNavigator from './navigation/BottomTabNavigator';
 import useLinking from './navigation/useLinking';
 import AddBabModal from './screens/AddBabModal';
+import AddUserModal from './screens/AddUserModal';
 import SqlUtil from './SqlUtil.js'
 
 const Stack = createStackNavigator();
@@ -67,7 +68,14 @@ export default function App(props) {
               name="AddBabModal"
               component={AddBabModal}
               options={({ route }) => ({
-                title: (route.params || {}).babId? '수정': '추가'
+                title: (route.params || {}).bab_id? '수정': '추가'
+              })}
+            />
+            <Stack.Screen
+              name="AddUserModal"
+              component={AddUserModal}
+              options={({ route }) => ({
+                title: (route.params || {}).user_id? '수정': '추가'
               })}
             />
           </Stack.Navigator>

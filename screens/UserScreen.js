@@ -29,7 +29,7 @@ export default class UserScreen extends React.Component {
   }
 
   callModal (param) {
-    this.props.navigation.navigate('AddBabModal', { ...param, title: !param? 'Add': 'Modify' })
+    this.props.navigation.navigate('AddUserModal', { ...param, title: !param? 'Add': 'Modify' })
   }
 
   render () {
@@ -47,16 +47,16 @@ export default class UserScreen extends React.Component {
             </View> :
             userList.map((user) => {
               return (
-                <View style={styles.unit} key={user.user_id}>
-                  <View style={styles.titleArea}>
-                    <View style={{ height: 15, width: 15, backgroundColor: user.color, borderRadius: 50, marginRight: 10 }} />
-                  </View>
-                  <View style={styles.inputArea}>
-                    <TouchableOpacity onPress={()=>this.callModal(user)}>
+                <TouchableOpacity onPress={()=>this.callModal(user)} key={user.user_id}>
+                  <View style={[ styles.unit, { justifyContent: 'center', alignItems: 'center' } ]}>
+                    <View style={[ styles.titleArea, { alignItems: 'flex-end' } ]}>
+                      <View style={{ height: 15, width: 15, backgroundColor: user.color, borderRadius: 50, marginRight: 10 }} />
+                    </View>
+                    <View style={styles.inputArea}>
                       <Text style={{ fontSize: 20 }}>{ user.name }</Text>
-                    </TouchableOpacity>
+                    </View>
                   </View>
-                </View>
+                </TouchableOpacity>
               )
             })
           }
@@ -96,10 +96,10 @@ const styles = StyleSheet.create({
     marginTop: 30
   },
   titleArea: {
-    flex: 2
+    flex: 1
   },
   inputArea: {
-    flex: 8,
+    flex: 9,
     // alignItems: 'center',
     // alignSelf: 'center',
     // alignContent: 'center',
