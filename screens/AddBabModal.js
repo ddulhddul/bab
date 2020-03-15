@@ -121,11 +121,9 @@ export default class AddBabModal extends React.Component {
               <Text style={{ fontSize: 20 }}>날짜</Text>
             </View>
             <View style={styles.inputArea}>
-              <TouchableOpacity onPress={() => this.setState({ showCalendar: true })}>
-                <View stye={{ flexDirection: 'row' }} >
-                  <AntDesign name={'calendar'} size={20} style={{ color: 'black' }} />
-                  <Text style={{ fontSize: 20 }}>{ (yyyymmdd||'') && String(yyyymmdd).replace(/(.{4})(.{2})(.{2})/, '$1-$2-$3') }</Text>
-                </View>
+              <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => this.setState({ showCalendar: true })}>
+                <AntDesign name={'calendar'} size={30} style={{ color: 'black', marginRight: 10 }} />
+                <Text style={{ fontSize: 20 }}>{ (yyyymmdd||'') && String(yyyymmdd).replace(/(.{4})(.{2})(.{2})/, '$1-$2-$3') }</Text>
               </TouchableOpacity>
               { showCalendar && <DatetimePicker value={this.getDateFromYYYYMMDD(yyyymmdd)} onChange={(event, selectedDate) => this.onCalendarChange(selectedDate)} /> }
             </View>
