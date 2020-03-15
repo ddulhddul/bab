@@ -93,7 +93,12 @@ const SqlUtil = {
 
   async listBab (param = {}) {
     const { res } = await this.queryExecute(
-      `SELECT * FROM TB_BAB
+      `SELECT
+        BAB.*,
+        USER.COLOR
+      FROM TB_BAB BAB
+      LEFT OUTER JOIN TB_USER USER
+        ON BAB.USER_ID = USER.USER_ID
       where yyyy = ?
       and mm = ?
       order by create_datetime desc`,

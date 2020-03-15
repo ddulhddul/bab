@@ -11,11 +11,7 @@ export default class AddBabModal extends React.Component {
     super(props)
     const defaultState = {
       costUnitList: [3000, 3500, 4000, 4500, 5000],
-      personList: [
-        { user_id: 1, name: '사람1' },
-        { user_id: 2, name: '사람2' },
-        { user_id: 3, name: '사람3' },
-      ],
+      personList: [],
       yyyymmdd: this.getYYYYMMDDFromDate(new Date),
       user_id: undefined,
       cost: 0,
@@ -32,6 +28,13 @@ export default class AddBabModal extends React.Component {
     if (params.bab_id) defaultState.bab_id = params.bab_id
     this.state = defaultState
     // console.log('this.props.navigation3', this.props.route.params)
+  }
+
+  async componentWillMount () {
+    const userList = await SqlUtil.listUser()
+    this.setState({
+      personList: userList
+    })
   }
 
   onCalendarChange (selectedDate) {
