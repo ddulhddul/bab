@@ -6,10 +6,11 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import CalendarScreen from '../screens/CalendarScreen';
-import SettingScreen from '../screens/SettingScreen';
+import UserScreen from '../screens/UserScreen';
+// import SettingScreen from '../screens/SettingScreen';
 
 const BottomTab = createBottomTabNavigator();
-const INITIAL_ROUTE_NAME = 'Setting';
+const INITIAL_ROUTE_NAME = 'User';
 
 export default function BottomTabNavigator({ navigation, route }) {
   // Set the header title on the parent stack navigator depending on the
@@ -28,6 +29,21 @@ export default function BottomTabNavigator({ navigation, route }) {
         }}
       />
       <BottomTab.Screen
+        name="User"
+        component={UserScreen}
+        options={{
+          title: '대상자',
+          tabBarIcon: ({ focused }) => (
+            <AntDesign
+              name={'user'}
+              size={30}
+              style={{ marginBottom: -3 }}
+              color={focused ? Colors.tabIconSelected : Colors.tabIconDefault}
+            />
+          )
+        }}
+      />
+      {/* <BottomTab.Screen
         name="Setting"
         component={SettingScreen}
         options={{
@@ -41,7 +57,7 @@ export default function BottomTabNavigator({ navigation, route }) {
             />
           )
         }}
-      />
+      /> */}
       {/* <BottomTab.Screen
         name="Home"
         component={HomeScreen}

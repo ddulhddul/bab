@@ -7,6 +7,15 @@ const SqlUtil = {
     await this.initUserTable()
   },
 
+  async listUser (param = {}) {
+    const { res } = await this.queryExecute(
+      `SELECT * FROM TB_USER
+      order by create_datetime desc`,
+      []
+    )
+    return (res.rows||{})._array || []
+  },
+
   async modifyUser (param = {}) {
     if (param.user_id) return await this.updateUser(param)
     else return await this.insertUser(param)
