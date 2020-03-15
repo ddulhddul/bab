@@ -1,12 +1,15 @@
 import * as React from 'react';
+import { AntDesign } from '@expo/vector-icons';
+import Colors from '../constants/Colors';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import CalendarScreen from '../screens/CalendarScreen';
+import SettingScreen from '../screens/SettingScreen';
 
 const BottomTab = createBottomTabNavigator();
-const INITIAL_ROUTE_NAME = 'Calendar';
+const INITIAL_ROUTE_NAME = 'Setting';
 
 export default function BottomTabNavigator({ navigation, route }) {
   // Set the header title on the parent stack navigator depending on the
@@ -25,6 +28,21 @@ export default function BottomTabNavigator({ navigation, route }) {
         }}
       />
       <BottomTab.Screen
+        name="Setting"
+        component={SettingScreen}
+        options={{
+          title: '세팅',
+          tabBarIcon: ({ focused }) => (
+            <AntDesign
+              name={'setting'}
+              size={30}
+              style={{ marginBottom: -3 }}
+              color={focused ? Colors.tabIconSelected : Colors.tabIconDefault}
+            />
+          )
+        }}
+      />
+      {/* <BottomTab.Screen
         name="Home"
         component={HomeScreen}
         options={{
@@ -39,7 +57,7 @@ export default function BottomTabNavigator({ navigation, route }) {
           title: 'Resources',
           tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-book" />,
         }}
-      />
+      /> */}
     </BottomTab.Navigator>
   );
 }
