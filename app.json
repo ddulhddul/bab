@@ -11,11 +11,11 @@
       "package": "com.ddulh.bab",
       "permissions": [],
       "config": {
-        "googleMobileAdsAppId": "ca-app-pub-6335521540809347/4832641930"
+        "googleMobileAdsAppId": "ca-app-pub-6335521540809347~2452312215"
       },
-      "versionCode": 4
+      "versionCode": 5
     },
-    "version": "1.0.3",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "bab",
